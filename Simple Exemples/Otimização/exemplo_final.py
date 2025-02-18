@@ -65,8 +65,13 @@ contra_solver.add(3 * produtoA + 2 * produtoB <= 100,
 # Adiciona a restrição de que o lucro seja estritamente maior que o lucro ótimo encontrado
 contra_solver.add(50 * produtoA + 40 * produtoB > lucro_otimo)
 
-# Verifica se existe um contra-exemplo
+# Verifica se existe um contra-exemplo e o exibe
 if contra_solver.check() == sat:
+    contra_modelo = contra_solver.model()
     print("Erro: Foi encontrado um contra-exemplo que produz lucro maior!")
+    print("Contra-exemplo:")
+    print("Quantidade de Produto A =", contra_modelo[produtoA])
+    print("Quantidade de Produto B =", contra_modelo[produtoB])
+    print("Lucro Total =", contra_modelo.evaluate(50 * produtoA + 40 * produtoB))
 else:
     print("Validação bem-sucedida: Nenhum contra-exemplo encontrado. A solução é ótima.")
