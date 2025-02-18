@@ -52,3 +52,21 @@ print("Quantidade de Produto A =", modelo[produtoA])
 print("Quantidade de Produto B =", modelo[produtoB])
 print("Lucro Total =", modelo.evaluate(lucro_total))
 print("Produção Total =", modelo.evaluate(producao_total))
+
+# Obtém o lucro máximo obtido na otimização
+lucro_otimo = modelo.evaluate(lucro_total)
+
+# Cria um solver simples para buscar um contra-exemplo que produza lucro maior
+contra_solver = Solver()
+contra_solver.add(3 * produtoA + 2 * produtoB <= 100,
+                  2 * produtoA + 4 * produtoB <= 80,
+                  produtoA >= 0,
+                  produtoB >= 0)
+# Adiciona a restrição de que o lucro seja estritamente maior que o lucro ótimo encontrado
+contra_solver.add(50 * produtoA + 40 * produtoB > lucro_otimo)
+
+# Verifica se existe um contra-exemplo
+if contra_solver.check() == sat:
+    print("Erro: Foi encontrado um contra-exemplo que produz lucro maior!")
+else:
+    print("Validação bem-sucedida: Nenhum contra-exemplo encontrado. A solução é ótima.")
